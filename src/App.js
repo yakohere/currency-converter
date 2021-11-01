@@ -38,7 +38,7 @@ const App = () => {
                 <Arrows />
 
                 <InputForm
-                    currencies={["UZS", ...currencies]}
+                    currencies={["UZS", "USD", ...currencies]}
                     title="Sotib olmoqchiman"
                     currencyClicked={(value) => setToBase(value)}
                     active={toBase}
