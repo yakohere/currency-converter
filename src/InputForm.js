@@ -1,13 +1,16 @@
+import { useSelector } from "react-redux";
 import styled, { css } from "styled-components"
 
 const InputForm = (props) => {
+    const state = useSelector(state => state.converter)
+
     return (
         <Wrapper>
             <h1>{props.title}</h1>
 
             <div className="currencies">
                 {
-                    props.currencies.map((e, i) =>
+                    state.bases?.map((e, i) =>
                         <Currency
                             active={props.active}
                             element={e}
@@ -35,7 +38,6 @@ const Wrapper = styled.div`
     @media(max-width: 900px) {
         width: 100%;
     }
-
 
     .currencies {
         width: 100%;
@@ -69,23 +71,22 @@ const Wrapper = styled.div`
 `;
 
 const Currency = styled.div`
-            width: 60px;
-            height: 50px;
-            padding: 0 10px;
-            font-weight: bold;
-            font-size: 18px;
-            text-align: center;
-            line-height: 50px;
-            border-right: 1px solid #E6E6E6;
-            cursor: pointer;
+    width: 60px;
+    height: 50px;
+    padding: 0 10px;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    line-height: 50px;
+    border-right: 1px solid #E6E6E6;
+    cursor: pointer;
 
-            ${(props) => css`
-                background-color: ${props.active === props.element ? "#5F77F4" : "#fffff"};
-                color: ${props.active === props.element ? "#ffffff" : "#000000"};
-            `}
+    ${(props) => css`
+        background-color: ${props.active === props.element ? "#5F77F4" : "#fffff"};
+        color: ${props.active === props.element ? "#ffffff" : "#000000"};
+    `}
 
-
-            :last-child {
-                border: none;
-            }
+    :last-child {
+        border: none;
+    }
 `;

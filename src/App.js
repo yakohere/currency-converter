@@ -1,48 +1,40 @@
-
 import styled from "styled-components"
 import InputForm from "./InputForm";
 import { ReactComponent as Arrows } from "./assets/arrows.svg"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { changeFromBase, changeFromValue, changeToBase, getBases, getRates } from "./convertedReducer";
 
 const App = () => {
-    const [currencies, setCurrencies] = useState([]);
-    const [fromBase, setFromBase] = useState("USD");
-    const [toBase, setToBase] = useState("UZS");
-    const [rates, setRates] = useState([]);
-    const [from, setFrom] = useState("1");
+    const dispatch = useDispatch()
+    const state = useSelector(state => state.converter)
 
-    useEffect(function () {
-        fetch("https://freecurrencyapi.net/api/v2/latest?apikey=e4c23da0-3b26-11ec-b946-afe9794a701d")
-            .then(response => response.json())
-            .then(data => setCurrencies(Object.keys(data.data)))
-    }, []);
+    useEffect(() => {
+        dispatch(getBases())
+    }, [dispatch])
 
-    useEffect(function () {
-        fetch(`https://freecurrencyapi.net/api/v2/latest?apikey=e4c23da0-3b26-11ec-b946-afe9794a701d&base_currency=${fromBase}`)
-            .then(response => response.json())
-            .then(data => setRates(data.data))
-    }, [fromBase])
+    useEffect(() => {
+        dispatch(getRates(state.fromBase))
+    }, [state.fromBase, dispatch])
 
     return (
         <Wrapper>
             <Converter>
                 <InputForm
-                    currencies={["USD", ...currencies]}
                     title="Menda bor"
-                    currencyClicked={(value) => setFromBase(value)}
-                    active={fromBase}
-                    value={from}
-                    changeValue={(val) => setFrom(val)}
+                    currencyClicked={(value) => dispatch(changeFromBase(value))}
+                    active={state.fromBase}
+                    value={state.fromValue}
+                    changeValue={(val) => dispatch(changeFromValue(val))}
                 />
 
                 <Arrows />
 
                 <InputForm
-                    currencies={["UZS", "USD", ...currencies]}
                     title="Sotib olmoqchiman"
-                    currencyClicked={(value) => setToBase(value)}
-                    active={toBase}
-                    value={(from * rates[toBase]).toFixed(2)}
+                    currencyClicked={(value) => dispatch(changeToBase(value))}
+                    active={state.toBase}
+                    value={(state.fromValue * state.rates[state.toBase]).toFixed(2)}
                     changeValue={() => { }}
                 />
             </Converter>
@@ -56,8 +48,6 @@ const Wrapper = styled.div`
     svg {
         width: 70px;
     }
-
-
 `;
 
 const Converter = styled.div`
